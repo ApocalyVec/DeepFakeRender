@@ -233,6 +233,17 @@ class DECA(object):
         grid_image = (grid.numpy().transpose(1,2,0).copy()*255)[:,:,[2,1,0]]
         grid_image = np.minimum(np.maximum(grid_image, 0), 255).astype(np.uint8)
         return grid_image
+
+    def visualize_detailed_image(self, visdict, size=None):
+        grids = {}
+        if size is None:
+            size = self.image_size
+        for key in visdict:
+            grids[key] = torchvision.utils.make_grid(F.interpolate(visdict[key], [size, size])).detach().cpu()
+        grid = visdict['shape_detail_images'][0].detach().cpu()
+        grid_image = (grid.numpy().transpose(1,2,0).copy()*255)[:,:,[2,1,0]]
+        grid_image = np.minimum(np.maximum(grid_image, 0), 255).astype(np.uint8)
+        return grid_image
     
     def save_obj(self, filename, opdict):
         '''
